@@ -12,19 +12,21 @@ const createAuthor = function (req, res, next) {
       createdAt: req.body.createdAt,
     };
 
-    Author.findOrCreate({ name: newAuthor.name }, newAuthor).then((author) => {
-      res.send({
-        success: true,
-        message: 'Author created successfully',
-        data: author,
+    Author.findOrCreate({ name: newAuthor.name }, newAuthor)
+      .then((author) => {
+        res.send({
+          success: true,
+          message: 'Author created successfully',
+          data: author,
+        });
+      })
+      .catch((err) => {
+        res.status(400).send({
+          success: false,
+          message: 'Something went wrong!',
+          data: err,
+        });
       });
-    }).catch((err) => {
-      res.status(400).send({
-        success: false,
-        message: 'Something went wrong!',
-        data: err,
-      });
-    });
   }
 };
 
@@ -45,19 +47,26 @@ const getAuthorById = function (req, res, next) {
 };
 
 const getAllAuthor = function (req, res, next) {
-  Author.find({}).then((authors) => {
-    res.send({
-      success: true,
-      message: 'All Author in DB',
-      data: authors,
+  const perPage = Number(req.query.limit) || 10;
+  const page = Number(req.query.page) || 1;
+
+  Author.find({})
+    .skip((perPage * page) - perPage)
+    .limit(perPage)
+    .then((authors) => {
+      res.send({
+        success: true,
+        message: 'All Author in DB',
+        data: authors,
+      });
+    })
+    .catch((err) => {
+      res.status(400).send({
+        success: false,
+        message: 'Something went wrong!',
+        data: err,
+      });
     });
-  }).catch((err) => {
-    res.status(400).send({
-      success: false,
-      message: 'Something went wrong!',
-      data: err,
-    });
-  });
 };
 
 const deleteAuthor = function (req, res, next) {
