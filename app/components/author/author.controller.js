@@ -1,11 +1,25 @@
-// const Author = require('./Author.model');
+const Author = require('./author.model');
 
 const createAuthor = function (req, res, next) {
-  res.send({
-    success: true,
-    message: 'Author created successfully',
-    data: req.body,
-  });
+  if (!req.body.name) {
+    res.status(400).send({
+      success: false,
+      message: 'লেখকের নাম অগ্রহণযোগ্য!',
+    });
+  } else {
+    const newAuthor = new Author({
+      name: req.body.name,
+      createdAt: req.body.createdAt,
+    });
+
+    newAuthor.save().then((author) => {
+      res.send({
+        success: true,
+        message: 'Author created successfully',
+        data: author,
+      });
+    });
+  }
 };
 
 const updateAuthor = function (req, res, next) {
