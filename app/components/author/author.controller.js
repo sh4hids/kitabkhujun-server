@@ -7,16 +7,22 @@ const createAuthor = function (req, res, next) {
       message: 'লেখকের নাম অগ্রহণযোগ্য!',
     });
   } else {
-    const newAuthor = new Author({
+    const newAuthor = {
       name: req.body.name,
       createdAt: req.body.createdAt,
-    });
+    };
 
-    newAuthor.save().then((author) => {
+    Author.findOrCreate({ name: newAuthor.name }, newAuthor).then((author) => {
       res.send({
         success: true,
         message: 'Author created successfully',
         data: author,
+      });
+    }).catch((err) => {
+      res.status(400).send({
+        success: false,
+        message: 'Something went wrong!',
+        data: err,
       });
     });
   }
@@ -39,10 +45,18 @@ const getAuthorById = function (req, res, next) {
 };
 
 const getAllAuthor = function (req, res, next) {
-  res.send({
-    success: true,
-    message: 'All Author in DB',
-    data: req.body,
+  Author.find({}).then((authors) => {
+    res.send({
+      success: true,
+      message: 'All Author in DB',
+      data: authors,
+    });
+  }).catch((err) => {
+    res.status(400).send({
+      success: false,
+      message: 'Something went wrong!',
+      data: err,
+    });
   });
 };
 
