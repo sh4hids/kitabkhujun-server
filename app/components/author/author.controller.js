@@ -47,16 +47,18 @@ const getAuthorById = function (req, res, next) {
 };
 
 const getAllAuthor = function (req, res, next) {
-  const perPage = Number(req.query.limit) || 10;
+  const perPage = Number(req.query.limit) || 0;
   const page = Number(req.query.page) || 1;
+  const sort = req.query.sort || 'asc';
+  const sortBy = req.query.sortBy || 'createdAt';
 
   Author.find({})
     .skip((perPage * page) - perPage)
     .limit(perPage)
+    .sort({ [sortBy]: sort })
     .then((authors) => {
       res.send({
         success: true,
-        message: 'All Author in DB',
         data: authors,
       });
     })
