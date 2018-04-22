@@ -10,13 +10,16 @@ const createAuthor = function (req, res, next) {
     const newAuthor = {
       name: req.body.name,
       createdAt: req.body.createdAt,
+      addedBy: req.user.id,
+      authorInfo: req.body.info,
+      authorPhoto: req.body.photo,
     };
 
     Author.findOrCreate({ name: newAuthor.name }, newAuthor)
       .then((author) => {
         res.send({
           success: true,
-          message: 'Author created successfully',
+          message: 'নতুন লেখক যোগ করা হয়েছে!',
           data: author,
         });
       })
