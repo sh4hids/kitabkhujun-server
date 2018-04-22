@@ -8,6 +8,16 @@ const authorSchema = new Schema({
     type: String,
     required: true,
   },
+  authorInfo: String,
+  authorPhoto: String,
+  addedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
+  updatedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
   createdAt: {
     type: Date,
     default: Date.now,
