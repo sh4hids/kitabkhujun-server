@@ -20,7 +20,13 @@ const createAuthor = function (req, res, next) {
         res.send({
           success: true,
           message: 'নতুন লেখক যোগ করা হয়েছে!',
-          data: author,
+          data: {
+            name: author.doc.name,
+            authorInfo: author.doc.authorInfo,
+            authorPhoto: author.doc.authorPhoto,
+            addedBy: author.doc.addedBy,
+          },
+          created: author.created,
         });
       })
       .catch((err) => {
@@ -42,11 +48,28 @@ const updateAuthor = function (req, res, next) {
 };
 
 const getAuthorById = function (req, res, next) {
-  res.send({
-    success: true,
-    message: 'Author found!',
-    data: req.body,
-  });
+  if (!req.params.id) {
+    res.status(400).send({
+      success: false,
+      message: 'লেখকের আইডি সঠিক নয়।',
+    });
+  } else {
+    Author.findById(req.params.id)
+      .select('name authorInfo authorPhoto addedBy')
+      .then((author) => {
+        res.send({
+          success: true,
+          data: author,
+        });
+      })
+      .catch((err) => {
+        res.status(400).send({
+          success: false,
+          message: 'Something went wrong!',
+          error: err,
+        });
+      });
+  }
 };
 
 const getAllAuthor = function (req, res, next) {
@@ -59,6 +82,7 @@ const getAllAuthor = function (req, res, next) {
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .sort({ [sortBy]: sort })
+    .select('name authorInfo authorPhoto addedBy')
     .then((authors) => {
       res.send({
         success: true,
