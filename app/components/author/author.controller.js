@@ -109,7 +109,7 @@ const deleteAuthor = function (req, res, next) {
       .then((author) => {
         res.send({
           success: true,
-          message: 'লেখক ডিলিট সফল হয়েছে।',
+          message: author ? 'লেখক ডিলিট সফল হয়েছে।' : 'লেখক খুঁজে পাওয়া যায়নি।',
           data: author,
         });
       })
