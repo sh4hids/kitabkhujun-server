@@ -19,7 +19,7 @@ const createAuthor = function (req, res, next) {
       .then((author) => {
         res.send({
           success: true,
-          message: 'নতুন লেখক যোগ করা হয়েছে!',
+          message: author.created ? 'নতুন লেখক যোগ করা হয়েছে!' : 'একই নামে লেখক আগে থেকেই ছিলো।',
           data: {
             name: author.doc.name,
             authorInfo: author.doc.authorInfo,
@@ -99,11 +99,28 @@ const getAllAuthor = function (req, res, next) {
 };
 
 const deleteAuthor = function (req, res, next) {
-  res.send({
-    success: true,
-    message: 'Author deleted successfully',
-    data: req.body,
-  });
+  if (!req.params.id) {
+    res.status(400).send({
+      success: false,
+      message: 'লেখকের আইডি সঠিক নয়।',
+    });
+  } else {
+    Author.findOneAndRemove({ _id: req.params.id })
+      .then((author) => {
+        res.send({
+          success: true,
+          message: 'লেখক ডিলিট সফল হয়েছে।',
+          data: author,
+        });
+      })
+      .catch((err) => {
+        res.status(400).send({
+          success: false,
+          message: 'সরবরাহকৃত আইডিটি সঠিক নয়।',
+          error: err,
+        });
+      });
+  }
 };
 
 
