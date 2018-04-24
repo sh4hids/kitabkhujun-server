@@ -13,18 +13,19 @@ passport.deserializeUser((id, done) => {
   });
 });
 
-passport.use(new GitHubStrategy(
-  {
-    clientID: keys.github.clientID,
-    clientSecret: keys.github.clientSecret,
-    callbackURL: '/auth/github/redirect',
-  },
-  (accessToken, refreshToken, profile, done) => {
-    User.findOrCreate({ githubId: profile.id }, { name: profile.displayName }, (err, user) => {
-      if (err) {
-        console.log(err);
-      }
-      return done(err, user);
-    });
-  },
-));
+passport.use(new GitHubStrategy({
+  clientID: keys.github.clientID,
+  clientSecret: keys.github.clientSecret,
+  callbackURL: '/auth/github/redirect',
+}, (accessToken, refreshToken, profile, done) => {
+  User.findOrCreate({
+    githubId: profile.id,
+  }, {
+    name: profile.displayName,
+  }, (err, user) => {
+    if (err) {
+      console.log(err);
+    }
+    return done(err, user);
+  });
+}));
