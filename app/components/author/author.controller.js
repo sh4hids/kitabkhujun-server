@@ -24,7 +24,7 @@ const createAuthor = function (req, res, next) {
             name: author.doc.name,
             authorInfo: author.doc.authorInfo,
             authorPhoto: author.doc.authorPhoto,
-            addedBy: author.doc.addedBy,
+            updatedAt: author.doc.updatedAt,
           },
         });
       })
@@ -39,11 +39,40 @@ const createAuthor = function (req, res, next) {
 };
 
 const updateAuthor = function (req, res, next) {
-  res.send({
-    success: true,
-    message: 'Author updated successfully',
-    data: req.body,
-  });
+  if (!req.body.name || !req.params.id) {
+    res.status(400).send({
+      success: false,
+      message: 'লেখকের নাম অগ্রহণযোগ্য!',
+    });
+  } else {
+    const updatedAuthor = {
+      name: req.body.name,
+      authorInfo: req.body.info,
+      authorPhoto: req.body.photo,
+      updatedBy: req.user.id,
+      updatedAt: req.body.updatedAt || new Date(),
+    };
+    Author.findByIdAndUpdate(req.params.id, updatedAuthor)
+      .then((author) => {
+        Author.findById(author.id)
+          .select('name authorInfo authorPhoto updatedAt')
+          .then((updatedAuthorData) => {
+            res.send({
+              success: true,
+              message: 'লেখকের তথ্য নবায়ণ সফল হয়েছে।',
+              data: updatedAuthorData,
+            });
+          });
+      })
+      .catch((err) => {
+        if (err) {
+          res.status(400).send({
+            success: false,
+            message: 'সরবরাহকৃত আইডিটি সঠিক নয়।',
+          });
+        }
+      });
+  }
 };
 
 const getAuthorById = function (req, res, next) {
@@ -54,7 +83,7 @@ const getAuthorById = function (req, res, next) {
     });
   } else {
     Author.findById(req.params.id)
-      .select('name authorInfo authorPhoto addedBy')
+      .select('name authorInfo authorPhoto updatedAt')
       .then((author) => {
         if (author) {
           res.send({
@@ -88,7 +117,7 @@ const getAllAuthor = function (req, res, next) {
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .sort({ [sortBy]: sort })
-    .select('name authorInfo authorPhoto addedBy')
+    .select('name authorInfo authorPhoto updatedAt')
     .then((authors) => {
       res.send({
         success: true,
@@ -112,6 +141,7 @@ const deleteAuthor = function (req, res, next) {
     });
   } else {
     Author.findOneAndRemove({ _id: req.params.id })
+      .select('name authorInfo authorPhoto updatedAt')
       .then((author) => {
         if (author) {
           res.send({
