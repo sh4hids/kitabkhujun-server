@@ -130,7 +130,6 @@ const deleteAuthor = function (req, res, next) {
         res.status(400).send({
           success: false,
           message: 'সরবরাহকৃত আইডিটি সঠিক নয়।',
-          error: err,
         });
       });
   }
