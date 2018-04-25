@@ -127,10 +127,12 @@ const deleteAuthor = function (req, res, next) {
         }
       })
       .catch((err) => {
-        res.status(400).send({
-          success: false,
-          message: 'সরবরাহকৃত আইডিটি সঠিক নয়।',
-        });
+        if (err) {
+          res.status(400).send({
+            success: false,
+            message: 'সরবরাহকৃত আইডিটি সঠিক নয়।',
+          });
+        }
       });
   }
 };
