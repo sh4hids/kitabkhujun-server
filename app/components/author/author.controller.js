@@ -18,7 +18,7 @@ const createAuthor = function (req, res, next) {
     Author.findOrCreate({ name: newAuthor.name }, newAuthor)
       .then((author) => {
         res.send({
-          success: true,
+          success: author.created,
           message: author.created ? 'নতুন লেখক যোগ করা হয়েছে!' : 'একই নামে লেখক আগে থেকেই ছিলো।',
           data: {
             name: author.doc.name,
@@ -26,7 +26,6 @@ const createAuthor = function (req, res, next) {
             authorPhoto: author.doc.authorPhoto,
             addedBy: author.doc.addedBy,
           },
-          created: author.created,
         });
       })
       .catch((err) => {
@@ -57,10 +56,17 @@ const getAuthorById = function (req, res, next) {
     Author.findById(req.params.id)
       .select('name authorInfo authorPhoto addedBy')
       .then((author) => {
-        res.send({
-          success: true,
-          data: author,
-        });
+        if (author) {
+          res.send({
+            success: true,
+            data: author,
+          });
+        } else {
+          res.status(404).send({
+            success: false,
+            message: 'লেখক খুঁজে পাওয়া যায়নি।',
+          });
+        }
       })
       .catch((err) => {
         res.status(400).send({
@@ -107,11 +113,18 @@ const deleteAuthor = function (req, res, next) {
   } else {
     Author.findOneAndRemove({ _id: req.params.id })
       .then((author) => {
-        res.send({
-          success: true,
-          message: author ? 'লেখক ডিলিট সফল হয়েছে।' : 'লেখক খুঁজে পাওয়া যায়নি।',
-          data: author,
-        });
+        if (author) {
+          res.send({
+            success: true,
+            data: author,
+            message: 'লেখক ডিলিট সফল হয়েছে।',
+          });
+        } else {
+          res.status(404).send({
+            success: false,
+            message: 'লেখক খুঁজে পাওয়া যায়নি।',
+          });
+        }
       })
       .catch((err) => {
         res.status(400).send({
