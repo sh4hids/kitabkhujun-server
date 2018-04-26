@@ -4,6 +4,7 @@ const authorController = require('./author.controller');
 
 const router = express.Router();
 
+router.get('/search/', authorController.findAuthorByName);
 router.get('/', authorController.getAllAuthor);
 router.get('/:id', authorController.getAuthorById);
 router.post('/', authCheck, authorController.createAuthor);

@@ -133,6 +133,37 @@ const getAllAuthor = function (req, res, next) {
     });
 };
 
+const findAuthorByName = function (req, res, next) {
+  const perPage = Number(req.query.limit) || 0;
+  const page = Number(req.query.page) || 1;
+  const sort = req.query.sort || 'asc';
+  const sortBy = req.query.sortBy || 'createdAt';
+
+  Author.find({
+    name: {
+      $regex: req.query.name,
+      $options: 'i',
+    },
+  })
+    .skip((perPage * page) - perPage)
+    .limit(perPage)
+    .sort({ [sortBy]: sort })
+    .select('name authorInfo authorPhoto updatedAt')
+    .then((authors) => {
+      res.send({
+        success: true,
+        data: authors,
+      });
+    })
+    .catch((err) => {
+      res.status(400).send({
+        success: false,
+        message: 'Something went wrong!',
+        data: err,
+      });
+    });
+};
+
 const deleteAuthor = function (req, res, next) {
   if (!req.params.id) {
     res.status(400).send({
@@ -173,5 +204,6 @@ module.exports = {
   updateAuthor,
   getAuthorById,
   getAllAuthor,
+  findAuthorByName,
   deleteAuthor,
 };
