@@ -4,7 +4,7 @@ const createCategory = function (req, res, next) {
   if (!req.body.title) {
     res.status(400).send({
       success: false,
-      message: 'লেখকের নাম অগ্রহণযোগ্য!',
+      message: 'অগ্রহণযোগ্য শিরোনাম!',
     });
   } else {
     const newCategory = {
@@ -27,11 +27,12 @@ const createCategory = function (req, res, next) {
         });
       })
       .catch((err) => {
-        res.status(400).send({
-          success: false,
-          message: 'Something went wrong!',
-          data: err,
-        });
+        if (err) {
+          res.status(400).send({
+            success: false,
+            message: 'কিছু একটা ঠিক নেই!',
+          });
+        }
       });
   }
 };
@@ -40,7 +41,7 @@ const updateCategory = function (req, res, next) {
   if (!req.body.title || !req.params.id) {
     res.status(400).send({
       success: false,
-      message: 'লেখকের নাম অগ্রহণযোগ্য!',
+      message: req.params.id ? 'অগ্রহণযোগ্য শিরোনাম!' : 'আইডি শূণ্য হতে পারবে না!',
     });
   } else {
     const updatedCategory = {
@@ -56,7 +57,7 @@ const updateCategory = function (req, res, next) {
           .then((updatedCategoryData) => {
             res.send({
               success: true,
-              message: 'লেখকের তথ্য নবায়ণ সফল হয়েছে।',
+              message: 'বিষয়ের তথ্য নবায়ণ সফল হয়েছে।',
               data: updatedCategoryData,
             });
           });
@@ -76,7 +77,7 @@ const getCategoryById = function (req, res, next) {
   if (!req.params.id) {
     res.status(400).send({
       success: false,
-      message: 'লেখকের আইডি সঠিক নয়।',
+      message: 'আইডি শূণ্য হতে পারবে না!',
     });
   } else {
     Category.findById(req.params.id)
@@ -90,16 +91,17 @@ const getCategoryById = function (req, res, next) {
         } else {
           res.status(404).send({
             success: false,
-            message: 'লেখক খুঁজে পাওয়া যায়নি।',
+            message: 'বিষয়টি খুঁজে পাওয়া যায়নি।',
           });
         }
       })
       .catch((err) => {
-        res.status(400).send({
-          success: false,
-          message: 'Something went wrong!',
-          error: err,
-        });
+        if (err) {
+          res.status(400).send({
+            success: false,
+            message: 'সরবরাহকৃত আইডিটি সঠিক নয়।',
+          });
+        }
       });
   }
 };
@@ -122,11 +124,12 @@ const getAllCategory = function (req, res, next) {
       });
     })
     .catch((err) => {
-      res.status(400).send({
-        success: false,
-        message: 'Something went wrong!',
-        data: err,
-      });
+      if (err) {
+        res.status(400).send({
+          success: false,
+          message: 'কিছু একটা ঠিক নেই!',
+        });
+      }
     });
 };
 
@@ -153,11 +156,12 @@ const findCategoryByTitle = function (req, res, next) {
       });
     })
     .catch((err) => {
-      res.status(400).send({
-        success: false,
-        message: 'Something went wrong!',
-        data: err,
-      });
+      if (err) {
+        res.status(400).send({
+          success: false,
+          message: 'কিছু একটা ঠিক নেই!',
+        });
+      }
     });
 };
 
@@ -165,7 +169,7 @@ const deleteCategory = function (req, res, next) {
   if (!req.params.id) {
     res.status(400).send({
       success: false,
-      message: 'লেখকের আইডি সঠিক নয়।',
+      message: 'আইডি সঠিক নয়।',
     });
   } else {
     Category.findOneAndRemove({ _id: req.params.id })
@@ -175,12 +179,12 @@ const deleteCategory = function (req, res, next) {
           res.send({
             success: true,
             data: category,
-            message: 'লেখক ডিলিট সফল হয়েছে।',
+            message: 'বিষয় ডিলিট সফল হয়েছে।',
           });
         } else {
           res.status(404).send({
             success: false,
-            message: 'লেখক খুঁজে পাওয়া যায়নি।',
+            message: 'বিষয়টি খুঁজে পাওয়া যায়নি।',
           });
         }
       })
