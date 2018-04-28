@@ -118,6 +118,7 @@ const getAllAuthor = function (req, res, next) {
     .limit(perPage)
     .sort({ [sortBy]: sort })
     .select('name authorInfo authorPhoto updatedAt')
+    .populate('addedBy', 'name')
     .then((authors) => {
       res.send({
         success: true,

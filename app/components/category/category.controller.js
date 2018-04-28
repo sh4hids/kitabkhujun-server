@@ -117,6 +117,7 @@ const getAllCategory = function (req, res, next) {
     .limit(perPage)
     .sort({ [sortBy]: sort })
     .select('title categoryDescription updatedAt')
+    .populate('addedBy', 'name')
     .then((categories) => {
       res.send({
         success: true,
