@@ -17,6 +17,10 @@ const bookSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Publisher',
   },
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
+  },
   addedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -25,14 +29,20 @@ const bookSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
-  readBy: [
-    {
-      userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-      },
+  readBy: [{
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
     },
-  ],
+  }],
+  availableSources: [{
+    title: String,
+    url: String,
+  }],
+  downloadLinks: [{
+    title: String,
+    url: String,
+  }],
   createdAt: {
     type: Date,
     default: Date.now,

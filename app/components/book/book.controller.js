@@ -9,22 +9,37 @@ const createBook = function (req, res, next) {
   } else {
     const newBook = {
       title: req.body.title,
-      createdAt: req.body.createdAt,
-      addedBy: req.user.id,
+      author: req.body.author,
+      publisher: req.body.publisher,
       description: req.body.description,
+      category: req.body.category,
+      availableSources: req.body.availableSources,
+      downloadLinks: req.body.downloadLinks,
+      addedBy: req.user.id,
+      createdAt: req.body.createdAt,
     };
 
     Book.findOrCreate({ title: newBook.title }, newBook)
       .then((book) => {
-        res.send({
-          success: book.created,
-          message: book.created ? 'নতুন লেখক যোগ করা হয়েছে!' : 'একই নামে লেখক আগে থেকেই ছিলো।',
-          data: {
-            title: book.doc.title,
-            description: book.doc.description,
-            updatedAt: book.doc.updatedAt,
-          },
-        });
+        if (!book.created) {
+          res.send({
+            success: false,
+            message: 'একই নামে লেখক আগে থেকেই ছিলো।',
+          });
+        } else {
+          Book.findById(book.id)
+            .select('title description availableSources downloadLinks')
+            .populate('author', 'name')
+            .populate('publisher', 'title')
+            .populate('category', 'title')
+            .then((addedBook) => {
+              res.send({
+                success: true,
+                message: 'নতুন লেখক যোগ করা হয়েছে!',
+                data: addedBook,
+              });
+            });
+        }
       })
       .catch((err) => {
         if (err) {
