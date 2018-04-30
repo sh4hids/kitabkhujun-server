@@ -27,7 +27,7 @@ const createBook = function (req, res, next) {
             message: 'একই নামে লেখক আগে থেকেই ছিলো।',
           });
         } else {
-          Book.findById(book.id)
+          Book.findById(book.doc.id)
             .select('title description availableSources downloadLinks')
             .populate('author', 'name')
             .populate('publisher', 'title')
