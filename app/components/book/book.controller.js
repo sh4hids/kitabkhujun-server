@@ -61,14 +61,19 @@ const updateBook = function (req, res, next) {
   } else {
     const updatedBook = {
       title: req.body.title,
+      author: req.body.author,
+      publisher: req.body.publisher,
       description: req.body.description,
+      category: req.body.category,
+      availableSources: req.body.availableSources,
+      downloadLinks: req.body.downloadLinks,
       updatedBy: req.user.id,
       updatedAt: req.body.updatedAt || new Date(),
     };
     Book.findByIdAndUpdate(req.params.id, updatedBook)
       .then((book) => {
         Book.findById(book.id)
-          .select('title description updatedAt')
+          .select('title description availableSources downloadLinks')
           .then((updatedBookData) => {
             res.send({
               success: true,
@@ -131,8 +136,9 @@ const getAllBook = function (req, res, next) {
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .sort({ [sortBy]: sort })
-    .select('title description updatedAt')
+    .select('title description availableSources downloadLinks')
     .populate('addedBy', 'name')
+    .populate('updatedBy', 'name')
     .then((categories) => {
       res.send({
         success: true,
