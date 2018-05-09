@@ -74,6 +74,9 @@ const updateBook = function (req, res, next) {
       .then((book) => {
         Book.findById(book.id)
           .select('title description availableSources downloadLinks')
+          .populate('author', 'name')
+          .populate('publisher', 'title')
+          .populate('category', 'title')
           .then((updatedBookData) => {
             res.send({
               success: true,
@@ -101,7 +104,10 @@ const getBookById = function (req, res, next) {
     });
   } else {
     Book.findById(req.params.id)
-      .select('title description updatedAt')
+      .select('title description availableSources downloadLinks')
+      .populate('author', 'name')
+      .populate('publisher', 'title')
+      .populate('category', 'title')
       .then((book) => {
         if (book) {
           res.send({
