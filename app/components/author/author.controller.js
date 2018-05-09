@@ -123,7 +123,7 @@ const getBookByAuthor = function (req, res, next) {
           const page = Number(req.query.page) || 1;
           const sort = req.query.sort || 'asc';
           const sortBy = req.query.sortBy || 'createdAt';
-          console.log(author.id);
+
           Book.find({
             author: {
               _id: author.id,
