@@ -74,6 +74,9 @@ const updateBook = function (req, res, next) {
       .then((book) => {
         Book.findById(book.id)
           .select('title description availableSources downloadLinks')
+          .populate('author', 'name')
+          .populate('publisher', 'title')
+          .populate('category', 'title')
           .then((updatedBookData) => {
             res.send({
               success: true,
@@ -101,7 +104,10 @@ const getBookById = function (req, res, next) {
     });
   } else {
     Book.findById(req.params.id)
-      .select('title description updatedAt')
+      .select('title description availableSources downloadLinks')
+      .populate('author', 'name')
+      .populate('publisher', 'title')
+      .populate('category', 'title')
       .then((book) => {
         if (book) {
           res.send({
@@ -137,12 +143,13 @@ const getAllBook = function (req, res, next) {
     .limit(perPage)
     .sort({ [sortBy]: sort })
     .select('title description availableSources downloadLinks')
-    .populate('addedBy', 'name')
-    .populate('updatedBy', 'name')
-    .then((categories) => {
+    .populate('author', 'name')
+    .populate('publisher', 'title')
+    .populate('category', 'title')
+    .then((books) => {
       res.send({
         success: true,
-        data: categories,
+        data: books,
       });
     })
     .catch((err) => {
@@ -170,11 +177,48 @@ const findBookByTitle = function (req, res, next) {
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .sort({ [sortBy]: sort })
-    .select('title description updatedAt')
-    .then((categories) => {
+    .select('title description availableSources downloadLinks')
+    .populate('author', 'name')
+    .populate('publisher', 'title')
+    .populate('category', 'title')
+    .then((books) => {
       res.send({
         success: true,
-        data: categories,
+        data: books,
+      });
+    })
+    .catch((err) => {
+      if (err) {
+        res.status(400).send({
+          success: false,
+          message: 'কিছু একটা ঠিক নেই!',
+        });
+      }
+    });
+};
+
+const findBookByAuthor = function (req, res, next) {
+  const perPage = Number(req.query.limit) || 0;
+  const page = Number(req.query.page) || 1;
+  const sort = req.query.sort || 'asc';
+  const sortBy = req.query.sortBy || 'createdAt';
+
+  Book.find({
+    author: {
+      _id: req.params.id,
+    },
+  })
+    .skip((perPage * page) - perPage)
+    .limit(perPage)
+    .sort({ [sortBy]: sort })
+    .select('title description availableSources downloadLinks')
+    .populate('author', 'name')
+    .populate('publisher', 'title')
+    .populate('category', 'title')
+    .then((books) => {
+      res.send({
+        success: true,
+        data: books,
       });
     })
     .catch((err) => {
@@ -228,5 +272,6 @@ module.exports = {
   getBookById,
   getAllBook,
   findBookByTitle,
+  findBookByAuthor,
   deleteBook,
 };
