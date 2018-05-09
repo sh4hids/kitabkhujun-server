@@ -197,40 +197,6 @@ const findBookByTitle = function (req, res, next) {
     });
 };
 
-const findBookByAuthor = function (req, res, next) {
-  const perPage = Number(req.query.limit) || 0;
-  const page = Number(req.query.page) || 1;
-  const sort = req.query.sort || 'asc';
-  const sortBy = req.query.sortBy || 'createdAt';
-
-  Book.find({
-    author: {
-      _id: req.params.id,
-    },
-  })
-    .skip((perPage * page) - perPage)
-    .limit(perPage)
-    .sort({ [sortBy]: sort })
-    .select('title description availableSources downloadLinks')
-    .populate('author', 'name')
-    .populate('publisher', 'title')
-    .populate('category', 'title')
-    .then((books) => {
-      res.send({
-        success: true,
-        data: books,
-      });
-    })
-    .catch((err) => {
-      if (err) {
-        res.status(400).send({
-          success: false,
-          message: 'কিছু একটা ঠিক নেই!',
-        });
-      }
-    });
-};
-
 const deleteBook = function (req, res, next) {
   if (!req.params.id) {
     res.status(400).send({
@@ -272,6 +238,5 @@ module.exports = {
   getBookById,
   getAllBook,
   findBookByTitle,
-  findBookByAuthor,
   deleteBook,
 };

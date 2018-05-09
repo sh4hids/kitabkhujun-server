@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.get('/search/', categoryController.findCategoryByTitle);
 router.get('/', categoryController.getAllCategory);
+router.get('/:id/books', categoryController.getBookByCategory);
 router.get('/:id', categoryController.getCategoryById);
 router.post('/', authCheck, categoryController.createCategory);
 router.put('/:id', authCheck, categoryController.updateCategory);

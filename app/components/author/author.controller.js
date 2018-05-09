@@ -1,4 +1,5 @@
 const Author = require('./author.model');
+const Book = require('../book/book.model');
 
 const createAuthor = function (req, res, next) {
   if (!req.body.name) {
@@ -90,6 +91,57 @@ const getAuthorById = function (req, res, next) {
             success: true,
             data: author,
           });
+        } else {
+          res.status(404).send({
+            success: false,
+            message: 'লেখক খুঁজে পাওয়া যায়নি।',
+          });
+        }
+      })
+      .catch((err) => {
+        res.status(400).send({
+          success: false,
+          message: 'Something went wrong!',
+          error: err,
+        });
+      });
+  }
+};
+
+const getBookByAuthor = function (req, res, next) {
+  if (!req.params.id) {
+    res.status(400).send({
+      success: false,
+      message: 'লেখকের আইডি সঠিক নয়।',
+    });
+  } else {
+    Author.findById(req.params.id)
+      .select('name authorInfo authorPhoto')
+      .then((author) => {
+        if (author) {
+          const perPage = Number(req.query.limit) || 0;
+          const page = Number(req.query.page) || 1;
+          const sort = req.query.sort || 'asc';
+          const sortBy = req.query.sortBy || 'createdAt';
+
+          Book.find({
+            author: {
+              _id: author.id,
+            },
+          })
+            .skip((perPage * page) - perPage)
+            .limit(perPage)
+            .sort({ [sortBy]: sort })
+            .select('title description availableSources downloadLinks')
+            .populate('author', 'name')
+            .populate('publisher', 'title')
+            .populate('category', 'title')
+            .then((books) => {
+              res.send({
+                success: true,
+                data: books,
+              });
+            });
         } else {
           res.status(404).send({
             success: false,
@@ -204,6 +256,7 @@ module.exports = {
   createAuthor,
   updateAuthor,
   getAuthorById,
+  getBookByAuthor,
   getAllAuthor,
   findAuthorByName,
   deleteAuthor,
