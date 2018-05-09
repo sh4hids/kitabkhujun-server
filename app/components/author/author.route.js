@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.get('/search/', authorController.findAuthorByName);
 router.get('/', authorController.getAllAuthor);
+router.get('/:id/books', authorController.getBookByAuthor);
 router.get('/:id', authorController.getAuthorById);
 router.post('/', authCheck, authorController.createAuthor);
 router.put('/:id', authCheck, authorController.updateAuthor);
