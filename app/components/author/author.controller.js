@@ -116,7 +116,7 @@ const getBookByAuthor = function (req, res, next) {
     });
   } else {
     Author.findById(req.params.id)
-      .select('name authorInfo authorPhoto updatedAt')
+      .select('name authorInfo authorPhoto')
       .then((author) => {
         if (author) {
           const perPage = Number(req.query.limit) || 0;
