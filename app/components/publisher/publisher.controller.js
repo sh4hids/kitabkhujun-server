@@ -1,4 +1,5 @@
 const Publisher = require('./publisher.model');
+const Book = require('../book/book.model');
 
 const createPublisher = function (req, res, next) {
   if (!req.body.title) {
@@ -123,7 +124,7 @@ const getBookByPublisher = function (req, res, next) {
           const sortBy = req.query.sortBy || 'createdAt';
 
           Book.find({
-            category: {
+            publisher: {
               _id: publisher.id,
             },
           })
