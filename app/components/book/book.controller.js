@@ -117,7 +117,7 @@ const getBookById = function (req, res, next) {
         } else {
           res.status(404).send({
             success: false,
-            message: 'বিষয়টি খুঁজে পাওয়া যায়নি।',
+            message: 'খুঁজে পাওয়া যায়নি।',
           });
         }
       })
@@ -205,18 +205,18 @@ const deleteBook = function (req, res, next) {
     });
   } else {
     Book.findOneAndRemove({ _id: req.params.id })
-      .select('title description updatedAt')
+      .select('title description')
       .then((book) => {
         if (book) {
           res.send({
             success: true,
             data: book,
-            message: 'বিষয় ডিলিট সফল হয়েছে।',
+            message: 'ডিলিট সফল হয়েছে।',
           });
         } else {
           res.status(404).send({
             success: false,
-            message: 'বিষয়টি খুঁজে পাওয়া যায়নি।',
+            message: 'খুঁজে পাওয়া যায়নি।',
           });
         }
       })

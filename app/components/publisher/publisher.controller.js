@@ -1,4 +1,5 @@
 const Publisher = require('./publisher.model');
+const Book = require('../book/book.model');
 
 const createPublisher = function (req, res, next) {
   if (!req.body.title) {
@@ -92,6 +93,58 @@ const getPublisherById = function (req, res, next) {
           res.status(404).send({
             success: false,
             message: 'প্রকাশক খুঁজে পাওয়া যায়নি।',
+          });
+        }
+      })
+      .catch((err) => {
+        if (err) {
+          res.status(400).send({
+            success: false,
+            message: 'সরবরাহকৃত আইডিটি সঠিক নয়।',
+          });
+        }
+      });
+  }
+};
+
+const getBookByPublisher = function (req, res, next) {
+  if (!req.params.id) {
+    res.status(400).send({
+      success: false,
+      message: 'আইডি শূণ্য হতে পারবে না!',
+    });
+  } else {
+    Publisher.findById(req.params.id)
+      .select('title publisherInfo')
+      .then((publisher) => {
+        if (publisher) {
+          const perPage = Number(req.query.limit) || 0;
+          const page = Number(req.query.page) || 1;
+          const sort = req.query.sort || 'asc';
+          const sortBy = req.query.sortBy || 'createdAt';
+
+          Book.find({
+            publisher: {
+              _id: publisher.id,
+            },
+          })
+            .skip((perPage * page) - perPage)
+            .limit(perPage)
+            .sort({ [sortBy]: sort })
+            .select('title description availableSources downloadLinks')
+            .populate('author', 'name')
+            .populate('publisher', 'title')
+            .populate('category', 'title')
+            .then((books) => {
+              res.send({
+                success: true,
+                data: books,
+              });
+            });
+        } else {
+          res.status(404).send({
+            success: false,
+            message: 'খুঁজে পাওয়া যায়নি।',
           });
         }
       })
@@ -205,6 +258,7 @@ module.exports = {
   createPublisher,
   updatePublisher,
   getPublisherById,
+  getBookByPublisher,
   getAllPublisher,
   findPublisherByTitle,
   deletePublisher,
