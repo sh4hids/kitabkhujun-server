@@ -22,7 +22,7 @@ const createPublisher = function (req, res, next) {
           message: publisher.created ? 'সফলভাবে যোগ করা হয়েছে!' : 'একই নামে আগে থেকেই ছিলো।',
           data: {
             title: publisher.doc.title,
-            publisherInfo: publisher.doc.info,
+            info: publisher.doc.info,
           },
         });
       })
