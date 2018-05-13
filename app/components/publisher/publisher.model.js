@@ -8,7 +8,7 @@ const publisherSchema = new Schema({
     type: String,
     required: true,
   },
-  publisherInfo: String,
+  info: String,
   addedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
