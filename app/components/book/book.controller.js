@@ -32,6 +32,8 @@ const createBook = function (req, res, next) {
             .populate('author', 'name')
             .populate('publisher', 'title')
             .populate('category', 'title')
+            .populate('readBy', 'readAt')
+            .populate('readBy.userId', 'name')
             .then((addedBook) => {
               res.send({
                 success: true,
@@ -77,6 +79,51 @@ const updateBook = function (req, res, next) {
           .populate('author', 'name')
           .populate('publisher', 'title')
           .populate('category', 'title')
+          .populate('readBy', 'readAt')
+          .populate('readBy.userId', 'name')
+          .then((updatedBookData) => {
+            res.send({
+              success: true,
+              message: 'বিষয়ের তথ্য নবায়ণ সফল হয়েছে।',
+              data: updatedBookData,
+            });
+          });
+      })
+      .catch((err) => {
+        if (err) {
+          res.status(400).send({
+            success: false,
+            message: 'সরবরাহকৃত আইডিটি সঠিক নয়।',
+          });
+        }
+      });
+  }
+};
+
+const readBook = function (req, res, next) {
+  if (!req.params.id) {
+    res.status(400).send({
+      success: false,
+      message: 'আইডি শূণ্য হতে পারবে না!',
+    });
+  } else {
+    const readBy = [{
+      userId: req.user.id,
+      readAt: req.body.readAt,
+    }];
+    const updatedBook = {
+      readBy,
+      updatedAt: req.body.updatedAt || new Date(),
+    };
+    Book.findByIdAndUpdate(req.params.id, updatedBook)
+      .then((book) => {
+        Book.findById(book.id)
+          .select('title description availableSources downloadLinks')
+          .populate('author', 'name')
+          .populate('publisher', 'title')
+          .populate('category', 'title')
+          .populate('readBy', 'readAt')
+          .populate('readBy.userId', 'name')
           .then((updatedBookData) => {
             res.send({
               success: true,
@@ -108,6 +155,8 @@ const getBookById = function (req, res, next) {
       .populate('author', 'name')
       .populate('publisher', 'title')
       .populate('category', 'title')
+      .populate('readBy', 'readAt')
+      .populate('readBy.userId', 'name')
       .then((book) => {
         if (book) {
           res.send({
@@ -146,6 +195,8 @@ const getAllBook = function (req, res, next) {
     .populate('author', 'name')
     .populate('publisher', 'title')
     .populate('category', 'title')
+    .populate('readBy', 'readAt')
+    .populate('readBy.userId', 'name')
     .then((books) => {
       res.send({
         success: true,
@@ -181,6 +232,8 @@ const findBookByTitle = function (req, res, next) {
     .populate('author', 'name')
     .populate('publisher', 'title')
     .populate('category', 'title')
+    .populate('readBy', 'readAt')
+    .populate('readBy.userId', 'name')
     .then((books) => {
       res.send({
         success: true,
@@ -235,6 +288,7 @@ const deleteBook = function (req, res, next) {
 module.exports = {
   createBook,
   updateBook,
+  readBook,
   getBookById,
   getAllBook,
   findBookByTitle,
