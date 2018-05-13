@@ -28,7 +28,7 @@ const createBook = function (req, res, next) {
         if (!book.created) {
           res.send({
             success: false,
-            message: 'একই নামে লেখক আগে থেকেই ছিলো।',
+            message: 'একই নামে বই আগে থেকেই ছিলো।',
           });
         } else {
           Book.findById(book.doc.id)
@@ -41,7 +41,7 @@ const createBook = function (req, res, next) {
             .then((addedBook) => {
               res.send({
                 success: true,
-                message: 'নতুন লেখক যোগ করা হয়েছে!',
+                message: 'নতুন বই যোগ করা হয়েছে!',
                 data: addedBook,
               });
             });
@@ -88,7 +88,7 @@ const updateBook = function (req, res, next) {
           .then((updatedBookData) => {
             res.send({
               success: true,
-              message: 'বিষয়ের তথ্য নবায়ণ সফল হয়েছে।',
+              message: 'তথ্য নবায়ণ সফল হয়েছে।',
               data: updatedBookData,
             });
           });
@@ -131,7 +131,7 @@ const readBook = function (req, res, next) {
           .then((updatedBookData) => {
             res.send({
               success: true,
-              message: 'বিষয়ের তথ্য নবায়ণ সফল হয়েছে।',
+              message: 'তথ্য নবায়ণ সফল হয়েছে।',
               data: updatedBookData,
             });
           });
