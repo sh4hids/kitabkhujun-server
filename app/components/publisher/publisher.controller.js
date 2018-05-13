@@ -12,18 +12,17 @@ const createPublisher = function (req, res, next) {
       title: req.body.title,
       createdAt: req.body.createdAt,
       addedBy: req.user.id,
-      publisherInfo: req.body.info,
+      info: req.body.info,
     };
 
     Publisher.findOrCreate({ title: newPublisher.title }, newPublisher)
       .then((publisher) => {
         res.send({
           success: publisher.created,
-          message: publisher.created ? 'নতুন প্রকাশক যোগ করা হয়েছে!' : 'একই নামে প্রকাশক আগে থেকেই ছিলো।',
+          message: publisher.created ? 'সফলভাবে যোগ করা হয়েছে!' : 'একই নামে আগে থেকেই ছিলো।',
           data: {
             title: publisher.doc.title,
-            publisherInfo: publisher.doc.categoryDescription,
-            updatedAt: publisher.doc.updatedAt,
+            info: publisher.doc.info,
           },
         });
       })
@@ -47,14 +46,14 @@ const updatePublisher = function (req, res, next) {
   } else {
     const updatedPublisher = {
       title: req.body.title,
-      publisherInfo: req.body.info,
+      info: req.body.info,
       updatedBy: req.user.id,
       updatedAt: req.body.updatedAt || new Date(),
     };
     Publisher.findByIdAndUpdate(req.params.id, updatedPublisher)
       .then((publisher) => {
         Publisher.findById(publisher.id)
-          .select('title publisherInfo updatedAt')
+          .select('title info')
           .then((updatedPublisherData) => {
             res.send({
               success: true,
@@ -82,7 +81,7 @@ const getPublisherById = function (req, res, next) {
     });
   } else {
     Publisher.findById(req.params.id)
-      .select('title publisherInfo updatedAt')
+      .select('title info')
       .then((publisher) => {
         if (publisher) {
           res.send({
@@ -92,7 +91,7 @@ const getPublisherById = function (req, res, next) {
         } else {
           res.status(404).send({
             success: false,
-            message: 'প্রকাশক খুঁজে পাওয়া যায়নি।',
+            message: 'খুঁজে পাওয়া যায়নি।',
           });
         }
       })
@@ -115,7 +114,7 @@ const getBookByPublisher = function (req, res, next) {
     });
   } else {
     Publisher.findById(req.params.id)
-      .select('title publisherInfo')
+      .select('title info')
       .then((publisher) => {
         if (publisher) {
           const perPage = Number(req.query.limit) || 0;
@@ -169,8 +168,7 @@ const getAllPublisher = function (req, res, next) {
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .sort({ [sortBy]: sort })
-    .select('title publisherInfo updatedAt')
-    .populate('addedBy', 'name')
+    .select('title info')
     .then((publishers) => {
       res.send({
         success: true,
@@ -202,7 +200,7 @@ const findPublisherByTitle = function (req, res, next) {
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .sort({ [sortBy]: sort })
-    .select('title publisherInfo updatedAt')
+    .select('title info')
     .then((publishers) => {
       res.send({
         success: true,
@@ -227,18 +225,18 @@ const deletePublisher = function (req, res, next) {
     });
   } else {
     Publisher.findOneAndRemove({ _id: req.params.id })
-      .select('title publisherInfo updatedAt')
+      .select('title info')
       .then((publisher) => {
         if (publisher) {
           res.send({
             success: true,
             data: publisher,
-            message: 'প্রকাশক ডিলিট সফল হয়েছে।',
+            message: 'ডিলিট সফল হয়েছে।',
           });
         } else {
           res.status(404).send({
             success: false,
-            message: 'প্রকাশক খুঁজে পাওয়া যায়নি।',
+            message: 'খুঁজে পাওয়া যায়নি।',
           });
         }
       })
