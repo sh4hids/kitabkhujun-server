@@ -13,6 +13,10 @@ const bookSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Author',
   },
+  translator: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Author',
+  },
   publisher: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Publisher',

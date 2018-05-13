@@ -19,7 +19,11 @@ const createBook = function (req, res, next) {
       createdAt: req.body.createdAt,
     };
 
-    Book.findOrCreate({ title: newBook.title }, newBook)
+    Book.findOrCreate({
+      title: newBook.title,
+      publisher: newBook.publisher,
+      author: newBook.author,
+    }, newBook)
       .then((book) => {
         if (!book.created) {
           res.send({
