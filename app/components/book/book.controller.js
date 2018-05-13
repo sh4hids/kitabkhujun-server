@@ -10,6 +10,7 @@ const createBook = function (req, res, next) {
     const newBook = {
       title: req.body.title,
       author: req.body.author,
+      translator: req.body.translator,
       publisher: req.body.publisher,
       description: req.body.description,
       category: req.body.category,
@@ -23,6 +24,7 @@ const createBook = function (req, res, next) {
       title: newBook.title,
       publisher: newBook.publisher,
       author: newBook.author,
+      translator: newBook.translator,
     }, newBook)
       .then((book) => {
         if (!book.created) {
@@ -34,6 +36,7 @@ const createBook = function (req, res, next) {
           Book.findById(book.doc.id)
             .select('title description availableSources downloadLinks')
             .populate('author', 'name')
+            .populate('translator', 'name')
             .populate('publisher', 'title')
             .populate('category', 'title')
             .populate('readBy', 'readAt')
@@ -68,6 +71,7 @@ const updateBook = function (req, res, next) {
     const updatedBook = {
       title: req.body.title,
       author: req.body.author,
+      translator: req.body.translator,
       publisher: req.body.publisher,
       description: req.body.description,
       category: req.body.category,
@@ -81,6 +85,7 @@ const updateBook = function (req, res, next) {
         Book.findById(book.id)
           .select('title description availableSources downloadLinks')
           .populate('author', 'name')
+          .populate('translator', 'name')
           .populate('publisher', 'title')
           .populate('category', 'title')
           .populate('readBy', 'readAt')
@@ -124,6 +129,7 @@ const readBook = function (req, res, next) {
         Book.findById(book.id)
           .select('title description availableSources downloadLinks')
           .populate('author', 'name')
+          .populate('translator', 'name')
           .populate('publisher', 'title')
           .populate('category', 'title')
           .populate('readBy', 'readAt')
@@ -157,6 +163,7 @@ const getBookById = function (req, res, next) {
     Book.findById(req.params.id)
       .select('title description availableSources downloadLinks')
       .populate('author', 'name')
+      .populate('translator', 'name')
       .populate('publisher', 'title')
       .populate('category', 'title')
       .populate('readBy', 'readAt')
@@ -197,6 +204,7 @@ const getAllBook = function (req, res, next) {
     .sort({ [sortBy]: sort })
     .select('title description availableSources downloadLinks')
     .populate('author', 'name')
+    .populate('translator', 'name')
     .populate('publisher', 'title')
     .populate('category', 'title')
     .populate('readBy', 'readAt')
@@ -234,6 +242,7 @@ const findBookByTitle = function (req, res, next) {
     .sort({ [sortBy]: sort })
     .select('title description availableSources downloadLinks')
     .populate('author', 'name')
+    .populate('translator', 'name')
     .populate('publisher', 'title')
     .populate('category', 'title')
     .populate('readBy', 'readAt')
