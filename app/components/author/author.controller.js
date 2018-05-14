@@ -13,7 +13,6 @@ const createAuthor = function (req, res, next) {
       createdAt: req.body.createdAt,
       addedBy: req.user.id,
       info: req.body.info,
-      photo: req.body.photo,
     };
 
     Author.findOrCreate({ name: newAuthor.name }, newAuthor)
@@ -24,7 +23,6 @@ const createAuthor = function (req, res, next) {
           data: {
             name: author.doc.name,
             info: author.doc.info,
-            photo: author.doc.photo,
           },
         });
       })
@@ -49,14 +47,13 @@ const updateAuthor = function (req, res, next) {
     const updatedAuthor = {
       name: req.body.name,
       info: req.body.info,
-      photo: req.body.photo,
       updatedBy: req.user.id,
       updatedAt: req.body.updatedAt || new Date(),
     };
     Author.findByIdAndUpdate(req.params.id, updatedAuthor)
       .then((author) => {
         Author.findById(author.id)
-          .select('name info photo')
+          .select('name info')
           .then((updatedAuthorData) => {
             res.send({
               success: true,
@@ -84,7 +81,7 @@ const getAuthorById = function (req, res, next) {
     });
   } else {
     Author.findById(req.params.id)
-      .select('name info photo')
+      .select('name info')
       .then((author) => {
         if (author) {
           res.send({
@@ -117,7 +114,7 @@ const getBookByAuthor = function (req, res, next) {
     });
   } else {
     Author.findById(req.params.id)
-      .select('name info photo')
+      .select('name info')
       .then((author) => {
         if (author) {
           const perPage = Number(req.query.limit) || 0;
@@ -173,7 +170,7 @@ const getAllAuthor = function (req, res, next) {
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .sort({ [sortBy]: sort })
-    .select('name info photo')
+    .select('name info')
     .then((authors) => {
       res.send({
         success: true,
@@ -205,7 +202,7 @@ const findAuthorByName = function (req, res, next) {
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .sort({ [sortBy]: sort })
-    .select('name info photo')
+    .select('name info')
     .then((authors) => {
       res.send({
         success: true,

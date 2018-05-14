@@ -9,7 +9,6 @@ const authorSchema = new Schema({
     required: true,
   },
   info: String,
-  photo: String,
   addedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
