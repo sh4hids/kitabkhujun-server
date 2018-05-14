@@ -8,8 +8,7 @@ const authorSchema = new Schema({
     type: String,
     required: true,
   },
-  authorInfo: String,
-  authorPhoto: String,
+  info: String,
   addedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
