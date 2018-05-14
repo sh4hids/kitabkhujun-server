@@ -29,10 +29,12 @@ const createAuthor = function (req, res, next) {
         });
       })
       .catch((err) => {
-        res.status(400).send({
-          success: false,
-          message: 'কিছু একটা ঠিক নেই!',
-        });
+        if (err) {
+          res.status(400).send({
+            success: false,
+            message: 'কিছু একটা ঠিক নেই!',
+          });
+        }
       });
   }
 };
@@ -97,10 +99,12 @@ const getAuthorById = function (req, res, next) {
         }
       })
       .catch((err) => {
-        res.status(400).send({
-          success: false,
-          message: 'কিছু একটা ঠিক নেই!',
-        });
+        if (err) {
+          res.status(400).send({
+            success: false,
+            message: 'কিছু একটা ঠিক নেই!',
+          });
+        }
       });
   }
 };
@@ -149,10 +153,12 @@ const getBookByAuthor = function (req, res, next) {
         }
       })
       .catch((err) => {
-        res.status(400).send({
-          success: false,
-          message: 'কিছু একটা ঠিক নেই!',
-        });
+        if (err) {
+          res.status(400).send({
+            success: false,
+            message: 'কিছু একটা ঠিক নেই!',
+          });
+        }
       });
   }
 };
@@ -175,10 +181,12 @@ const getAllAuthor = function (req, res, next) {
       });
     })
     .catch((err) => {
-      res.status(400).send({
-        success: false,
-        message: 'কিছু একটা ঠিক নেই!',
-      });
+      if (err) {
+        res.status(400).send({
+          success: false,
+          message: 'কিছু একটা ঠিক নেই!',
+        });
+      }
     });
 };
 
@@ -205,10 +213,12 @@ const findAuthorByName = function (req, res, next) {
       });
     })
     .catch((err) => {
-      res.status(400).send({
-        success: false,
-        message: 'কিছু একটা ঠিক নেই!',
-      });
+      if (err) {
+        res.status(400).send({
+          success: false,
+          message: 'কিছু একটা ঠিক নেই!',
+        });
+      }
     });
 };
 
