@@ -253,7 +253,6 @@ const deleteAuthor = function (req, res, next) {
   }
 };
 
-
 module.exports = {
   createAuthor,
   updateAuthor,
