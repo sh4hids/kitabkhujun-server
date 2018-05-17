@@ -19,7 +19,7 @@ const createCategory = function (req, res, next) {
       .then((category) => {
         res.send({
           success: category.created,
-          message: category.created ? 'নতুন লেখক যোগ করা হয়েছে!' : 'একই নামে লেখক আগে থেকেই ছিলো।',
+          message: category.created ? 'সফলভাবে যোগ করা হয়েছে!' : 'একই নামে আগে থেকেই ছিলো।',
           data: {
             title: category.doc.title,
             description: category.doc.description,
