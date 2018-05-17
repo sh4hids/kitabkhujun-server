@@ -15,6 +15,14 @@ const userSchema = new Schema({
   facebookId: String,
   googleId: String,
   githubId: String,
+  isAdmin: {
+    type: Boolean,
+    default: false,
+  },
+  isModerator: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 userSchema.plugin(findOrCreate);
