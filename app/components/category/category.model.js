@@ -8,7 +8,7 @@ const categorySchema = new Schema({
     type: String,
     required: true,
   },
-  categoryDescription: String,
+  description: String,
   addedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

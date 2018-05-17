@@ -12,18 +12,17 @@ const createCategory = function (req, res, next) {
       title: req.body.title,
       createdAt: req.body.createdAt,
       addedBy: req.user.id,
-      categoryDescription: req.body.description,
+      description: req.body.description,
     };
 
     Category.findOrCreate({ title: newCategory.title }, newCategory)
       .then((category) => {
         res.send({
           success: category.created,
-          message: category.created ? 'নতুন লেখক যোগ করা হয়েছে!' : 'একই নামে লেখক আগে থেকেই ছিলো।',
+          message: category.created ? 'সফলভাবে যোগ করা হয়েছে!' : 'একই নামে আগে থেকেই ছিলো।',
           data: {
             title: category.doc.title,
-            categoryDescription: category.doc.categoryDescription,
-            updatedAt: category.doc.updatedAt,
+            description: category.doc.description,
           },
         });
       })
@@ -47,18 +46,18 @@ const updateCategory = function (req, res, next) {
   } else {
     const updatedCategory = {
       title: req.body.title,
-      categoryDescription: req.body.description,
+      description: req.body.description,
       updatedBy: req.user.id,
       updatedAt: req.body.updatedAt || new Date(),
     };
     Category.findByIdAndUpdate(req.params.id, updatedCategory)
       .then((category) => {
         Category.findById(category.id)
-          .select('title categoryDescription updatedAt')
+          .select('title description')
           .then((updatedCategoryData) => {
             res.send({
               success: true,
-              message: 'বিষয়ের তথ্য নবায়ণ সফল হয়েছে।',
+              message: 'তথ্য নবায়ণ সফল হয়েছে।',
               data: updatedCategoryData,
             });
           });
@@ -82,7 +81,7 @@ const getCategoryById = function (req, res, next) {
     });
   } else {
     Category.findById(req.params.id)
-      .select('title categoryDescription updatedAt')
+      .select('title description')
       .then((category) => {
         if (category) {
           res.send({
@@ -92,7 +91,7 @@ const getCategoryById = function (req, res, next) {
         } else {
           res.status(404).send({
             success: false,
-            message: 'বিষয়টি খুঁজে পাওয়া যায়নি।',
+            message: 'খুঁজে পাওয়া যায়নি।',
           });
         }
       })
@@ -115,7 +114,7 @@ const getBookByCategory = function (req, res, next) {
     });
   } else {
     Category.findById(req.params.id)
-      .select('title categoryDescription')
+      .select('title description')
       .then((category) => {
         if (category) {
           const perPage = Number(req.query.limit) || 0;
@@ -169,8 +168,7 @@ const getAllCategory = function (req, res, next) {
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .sort({ [sortBy]: sort })
-    .select('title categoryDescription updatedAt')
-    .populate('addedBy', 'name')
+    .select('title description')
     .then((categories) => {
       res.send({
         success: true,
@@ -202,7 +200,7 @@ const findCategoryByTitle = function (req, res, next) {
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .sort({ [sortBy]: sort })
-    .select('title categoryDescription updatedAt')
+    .select('title description')
     .then((categories) => {
       res.send({
         success: true,
@@ -227,18 +225,18 @@ const deleteCategory = function (req, res, next) {
     });
   } else {
     Category.findOneAndRemove({ _id: req.params.id })
-      .select('title categoryDescription updatedAt')
+      .select('title description')
       .then((category) => {
         if (category) {
           res.send({
             success: true,
             data: category,
-            message: 'বিষয় ডিলিট সফল হয়েছে।',
+            message: 'ডিলিট সফল হয়েছে।',
           });
         } else {
           res.status(404).send({
             success: false,
-            message: 'বিষয়টি খুঁজে পাওয়া যায়নি।',
+            message: 'খুঁজে পাওয়া যায়নি।',
           });
         }
       })
@@ -252,7 +250,6 @@ const deleteCategory = function (req, res, next) {
       });
   }
 };
-
 
 module.exports = {
   createCategory,
