@@ -5,7 +5,7 @@ const { authCheck: { ensureAuthenticated, isAdmin } } = require('../../helpers/a
 const router = express.Router();
 
 router.post('/', userController.createUser);
-router.get('/', ensureAuthenticated, userController.getAllUser);
+router.get('/', isAdmin, userController.getAllUser);
 router.get('/:id', ensureAuthenticated, userController.getUserById);
 router.put('/:id', ensureAuthenticated, userController.updateUser);
 router.delete('/:id', isAdmin, userController.deleteUser);
