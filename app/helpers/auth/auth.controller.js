@@ -9,7 +9,9 @@ const logOut = function (req, res, next) {
 };
 
 const googleCallbackHandler = function (req, res, next) {
-  res.send('Logged in with google.');
+  req.login(req.user, () => {
+    res.redirect('/api/v1/docs');
+  });
 };
 
 const facebookCallbackHandler = function (req, res, next) {

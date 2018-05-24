@@ -8,10 +8,11 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  username: {
+  email: {
     type: String,
     unique: true,
   },
+  username: String,
   facebookId: String,
   googleId: String,
   githubId: String,
