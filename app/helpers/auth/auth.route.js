@@ -5,8 +5,8 @@ const passport = require('passport');
 const router = express.Router();
 
 router.get('/login', authController.logIn);
-// router.get('/login/google', authController.loginWithGoogle);
-router.get('/login/google/redirect', authController.googleCallbackHandler);
+router.get('/login/google', passport.authenticate('google', { scope: ['email profile'] }));
+router.get('/google/redirect', passport.authenticate('google', { failureRedirect: '/auth/login' }), authController.googleCallbackHandler);
 router.get('/login/github', passport.authenticate('github', {
   scope: ['user:email'],
 }));
